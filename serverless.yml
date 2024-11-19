@@ -1,0 +1,52 @@
+
+service: pedidos-api
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  environment:
+    TABLE_NAME: Pedidos
+
+resources:
+  Resources:
+    PedidosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Pedidos
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+functions:
+  createPedido:
+    handler: create_pedidos.handler
+    events:
+      - http:
+          path: pedidos/create
+          method: post
+
+  fetchPedido:
+    handler: fetch_pedidos.handler
+    events:
+      - http:
+          path: pedidos/fetch
+          method: get
+
+  updatePedido:
+    handler: update_pedidos.handler
+    events:
+      - http:
+          path: pedidos/update
+          method: put
+
+  deletePedido:
+    handler: delete_pedidos.handler
+    events:
+      - http:
+          path: pedidos/delete
+          method: delete
